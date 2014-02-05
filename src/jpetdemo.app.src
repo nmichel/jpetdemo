@@ -1,0 +1,13 @@
+{application, jpetdemo,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, [jpetdemo_sup]},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  cowboy
+                 ]},
+  {mod, {jpetdemo_app, []}},
+  {env, []}
+ ]}.

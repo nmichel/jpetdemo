@@ -1,21 +1,22 @@
 -module(jpetdemo_app).
 -behaviour(application).
 
-%% Application callbacks
 -export([start/2,
          stop/1]).
 
-%% Application callbacks
-%% 
+-define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).
+-define(CHILD_PARAMS(I, Params, Type), {I, {I, start_link, Params}, permanent, 5000, Type, [I]}).
 
 start(_StartType, _StartArgs) ->
-    jpetdemo_sup:start_link(),
-    [{jpetdemo_router, RouterSrv, _, _}] = supervisor:which_children(jpetdemo_sup),
+    {ok, SupRef} = jpetdemo_sup:start_link(),
+    {ok, RouterRef} = supervisor:start_child(SupRef, ?CHILD(jpetdemo_router, worker)),
+    {ok, CntrlrRef} = supervisor:start_child(SupRef, ?CHILD_PARAMS(jpetdemo_controller_srv, [[RouterRef]], worker)),
+%%    {ok, CntrlrRef} = supervisor:start_child(SupRef, ?CHILD(jpetdemo_controller_srv, worker)),
 
     Dispatch = cowboy_router:compile([
                                       {'_', [
                                              {"/", cowboy_static, {priv_file, jpetdemo, "index.html"}},
-                                             {"/websocket", jpetdemo_ws_handler, [{RouterSrv}]},
+                                             {"/websocket", jpetdemo_ws_handler, [{RouterRef}]},
                                              {"/static/[...]", cowboy_static, {priv_dir, jpetdemo, "static"}}
                                             ]}
                                      ]),

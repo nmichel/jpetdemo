@@ -5,7 +5,7 @@
          register/3,
          unregister/3,
          unregister/2,
-         route/2]).
+         route/3]).
 
 -export([test/0]).
 
@@ -23,8 +23,8 @@ unregister(Srv, Tgt, Pattern) ->
 unregister(Srv, Tgt) ->
     gen_server:call(Srv, {unregister, Tgt, all}).
 
-route(Srv, Node) ->
-    gen_server:call(Srv, {route, Node}).
+route(Srv, From, Node) ->
+    gen_server:call(Srv, {route, From, Node}).
 
 %% Test
 

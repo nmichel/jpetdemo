@@ -50,12 +50,12 @@ handle_call({unregister, Tgt, Pattern}, _From, State) ->
                 dict:store(Pattern, {EPM, lists:keydelete(Tgt, 1, Tgts)}, BP)
         end,
     {reply, ok, State#state{by_pattern = BP2}};
-handle_call({route, Node}, _From, State) ->
+handle_call({route, Emitter, Node}, _From, State) ->
     dict:fold(fun(Pattern, {EPM, Tgts}, Acc) ->
                       case ejpet:run(Node, EPM) of 
                           {true, Captures} ->
                               lists:map(fun({Tgt}) ->
-                                                Tgt ! Node
+                                                Tgt ! {Emitter, Node, Captures}
                                         end, Tgts);
                           {false, []} ->
                               ok

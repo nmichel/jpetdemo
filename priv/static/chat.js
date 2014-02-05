@@ -23,11 +23,54 @@ function toggle_connection() {
     };
 };
 
+function subscribe_room() {
+    var room = $("#subscribe_room").val();
+    var msg = {
+        ctrl: {
+            subscribe: ["room", room]
+        }
+    };
+    websocket.send(JSON.stringify(msg));
+}
+
+function unsubscribe_room() {
+    var room = $("#subscribe_room").val();
+    var msg = {
+        ctrl: {
+            unsubscribe: ["room", room]
+        }
+    };
+    websocket.send(JSON.stringify(msg));
+}
+
+function subscribe_topic() {
+    var topic = $("#subscribe_topic").val();
+    var msg = {
+        ctrl: {
+            subscribe: ["topic", topic]
+        }
+    };
+    websocket.send(JSON.stringify(msg));
+}
+
+function unsubscribe_topic() {
+    var topic = $("#subscribe_topic").val();
+    var msg = {
+        ctrl: {
+            unsubscribe: ["topic", topic]
+        }
+    };
+    websocket.send(JSON.stringify(msg));
+}
+
 function sendTxt() {
     if (websocket.readyState == websocket.OPEN){
         var name = $("#name").val();
+        var room = $("#send_to_room").val();
         var txt = $("#send_txt").val();
-        var msg = {from: name, msg: txt};
+        var msg = {from: name,
+                   room: room,
+                   msg: txt};
         websocket.send(JSON.stringify(msg));
     } else {
         showScreen('websocket is not connected'); 
@@ -38,28 +81,26 @@ function onOpen(evt) {
     var matcher = jjpet.compile('**/{"answer":_}');
     showScreen('<span style="color: green;">CONNECTED </span>'); 
     $("#connected").fadeIn('slow');
-    $("#content").fadeIn('slow');
 };  
 
 function onClose(evt) { 
     showScreen('<span style="color: red;">DISCONNECTED </span>');
+    $("#connected").fadeOut('slow');
 };  
 
 function onMessage(evt) { 
     var data = evt.data,
     json = JSON.parse(data);
     
-    showScreen('<span style="color: blue;">[' + json.from +
-               '] ' + json.msg + '</span>'); 
+    showScreen('<span style="color: blue;">[' + json.from + '@' + json.room + '] ' + json.msg + '</span>'); 
 };  
 
 function onError(evt) {
-    showScreen('<span style="color: red;">ERROR: ' + evt.data+
-               '</span>');
+    showScreen('<span style="color: red;">ERROR: ' + evt.data + '</span>');
 };
 
 function showScreen(txt) { 
-        $('#output').prepend('<p>' + txt + '</p>');
+    $('#output').prepend('<p>' + txt + '</p>');
 };
 
 function clearScreen() 
@@ -69,13 +110,11 @@ function clearScreen()
 
 $(function() {
     $("#connected").hide(); 
-    $("#content").hide(); 
 
     if(!("WebSocket" in window)){  
-        $('#status').append('<p><span style="color: red;">websockets are not supported </span></p>');
+        showScreen('<p><span style="color: red;">websockets are not supported </span></p>');
         $("#navigation").hide();  
     } else {
-        $('#status').append('<p><span style="color: green;">websockets are supported </span></p>');
         connect();
     };
 });

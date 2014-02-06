@@ -1,9 +1,9 @@
-#jpetchat : a basic ejpet demo
+#jpetdemo : a basic ejpet demo
 
 
 #What
 
-`jpetchat` is a messenging server based on websockets and JSON messenging.
+`jpetdemo` is a messenging server based on websockets and JSON messenging.
 
 The server is very simple and illustrates how JSON nodes can be routed using `ejpet` pattern matching mechanism.
 
@@ -11,7 +11,7 @@ The server is very simple and illustrates how JSON nodes can be routed using `ej
 Clone 
 
 ```bash
-$ git clone git@github.com:nmichel/jpetchat.git
+$ git clone git@github.com:nmichel/jpetdemo.git
 ```
 
 Build

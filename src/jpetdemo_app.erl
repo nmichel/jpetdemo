@@ -11,7 +11,6 @@ start(_StartType, _StartArgs) ->
     {ok, SupRef} = jpetdemo_sup:start_link(),
     {ok, RouterRef} = supervisor:start_child(SupRef, ?CHILD(jpetdemo_router, worker)),
     {ok, CntrlrRef} = supervisor:start_child(SupRef, ?CHILD_PARAMS(jpetdemo_controller_srv, [[RouterRef]], worker)),
-%%    {ok, CntrlrRef} = supervisor:start_child(SupRef, ?CHILD(jpetdemo_controller_srv, worker)),
 
     Dispatch = cowboy_router:compile([
                                       {'_', [

@@ -1,47 +1,104 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Websocket client</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/chat.css"></link>
     <script src="/static/jquery-1.10.2.min.js"></script>
     <script src="/static/jjpet-0.0.2.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
     <script src="/static/chat.js"></script>
-    <link rel="stylesheet" href="/static/chat.css"></link>
+    <title>jpetchat</title>
   </head>
 
   <body>
-    <div id="header">
-      <h1>jpetchat</h1>
-    </div>
+    <div class="container" role="main">
 
-    <div id="connection">
-      <input type="text" id="server" value="ws://192.168.232.128:9000/websocket"></input>
-      <button type="button" onclick="toggle_connection()">connection</button>
-    </div>
-
-    <div id="navigation">
-      <div id="connected">
-        <div>
-          From <input type="text"' id="name" value=""></input>
-          To room <input type="tex"' id="send_to_room" value=""></input>
-          Text <input type="text" id="send_txt" value=""></input>
-          <button type="button" onclick="sendTxt();">send</button>
+      <div class="row-fluid">
+        <div class="jumbotron">
+          <h1>jpetchat</h1>
         </div>
-        <div>
-          Room <input type="text"' id="subscribe_room" value=""></input>
-          <button type="button" onclick="subscribe_room();">Subscribe</button>
-          <button type="button" onclick="unsubscribe_room();">Unsubscribe</button>
+        <div id="connection" class="panel panel-primary">
+          <div class="panel-heading">
+            <h2 class="panel-title">Connection</h2>
+          </div>
+          <form class="panel-body form-horizontal">
+            <div class="form-group">
+              <label class="control-label col-xs-2">Server</label>
+              <div class="col-xs-5">
+                <input type="text" id="server" value="ws://192.168.232.128:9000/websocket" class="form-control"></input>
+              </div>
+              <button id="toggle_connection" type="button" class="btn btn-success">connection</button>
+            </div>
+          </form>
         </div>
-        <div>
-          Topic <input type="text"' id="subscribe_topic" value=""></input>
-          <button type="button" onclick="subscribe_topic();">Subscribe</button>
-          <button type="button" onclick="unsubscribe_topic();">Unsubscribe</button>
+        
+        <div id="navigation" class="panel panel-primary">
+          <div class="panel-heading">
+            <h2 class="panel-title">Messenging</h2>
+          </div>
+          <form class="panel-body form-horizontal">
+            <div id="connected">
+              <div class="form-group">
+                <label class="control-label col-xs-2">From</label>
+                <div class="col-xs-5">
+                  <input type="text" id="name" value="bob" class="form-control"></input>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-xs-2">To room</label>
+                <div class="col-xs-5">
+                  <input type="tex" id="send_to_room" value="erlang" class="form-control"></input>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-xs-2">Text</label>
+                <div class="col-xs-5">
+                  <input type="text" id="send_txt" value="Hey ! let's talk about #ejpet !" class="form-control"></input>
+                </div>
+                <button id="send_text" type="button" class="btn btn-success">send</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div id="subscriptions" class="panel panel-primary">
+          <div class="panel-heading">
+            <h2 class="panel-title">Subscriptions</h2>
+          </div>
+          <form class="panel-body form-horizontal">
+            <div>
+              <div class="form-group">
+                <label class="control-label col-xs-2">Room</label>
+                <div class="col-xs-5">
+                  <input type="text" id="subscribe_room_text" value="erlang" class="form-control"></input>
+                </div>
+                <button type="button" id="subscribe_room" class="btn btn-success">Subscribe</button>
+                <button type="button" id="unsubscribe_room" class="btn btn-warning">Unsubscribe</button>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-xs-2">Topic</label>
+                <div class="col-xs-5">
+                  <input type="text" id="subscribe_topic_text" value="ejpet" class="form-control"></input>
+                </div>
+                <button type="button" id="subscribe_topic" class="btn btn-success">Subscribe</button>
+                <button type="button" id="unsubscribe_topic" class="btn btn-warning">Unsubscribe</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h2 class="panel-title">Output</h2>
+          </div>
+          <form class="panel-body form-horizontal">
+            <div id="content" class="form-group">
+              <div id="output" class="col-xs-9"></div>
+              <button id="clear" id="clear_screen" class="btn btn-danger">clear</button>
+            </div>
+          </form>
         </div>
       </div>
-    </div>
-
-    <div id="content">
-      Clear Log <button id="clear" onclick="clearScreen()">clear</button>
-      <div id="output"></div>
     </div>
   </body>
 </html> 

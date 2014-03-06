@@ -12,6 +12,7 @@ Clone
 
 ```bash
 $ git clone git@github.com:nmichel/jpetdemo.git
+$ cd jpetdemo
 ```
 
 Build

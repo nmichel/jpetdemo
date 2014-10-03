@@ -28,16 +28,16 @@ handle_call(_Request, _From, State) ->
 handle_cast(_Request, State) ->
     {noreply, State}.
 
-handle_info(Info = {From, Node, [{"sub_room", Room}]}, State) ->
+handle_info(Info = {From, Node, [{"sub_room", [Room]}]}, State) ->
     jpetdemo_router:register(State#state.router, From, "{\"room\":\"" ++ binary_to_list(Room) ++ "\"}"),
     {noreply, State};
-handle_info(Info = {From, Node, [{"unsub_room", Room}]}, State) ->
+handle_info(Info = {From, Node, [{"unsub_room", [Room]}]}, State) ->
     jpetdemo_router:unregister(State#state.router, From, "{\"room\":\"" ++ binary_to_list(Room) ++ "\"}"),
     {noreply, State};
-handle_info(Info = {From, Node, [{"sub_topic", Topic}]}, State) ->
+handle_info(Info = {From, Node, [{"sub_topic", [Topic]}]}, State) ->
     jpetdemo_router:register(State#state.router, From, "{\"msg\":#\"#" ++ binary_to_list(Topic) ++ "\"}"),
     {noreply, State};
-handle_info(Info = {From, Node, [{"unsub_topic", Topic}]}, State) ->
+handle_info(Info = {From, Node, [{"unsub_topic", [Topic]}]}, State) ->
     jpetdemo_router:unregister(State#state.router, From, "{\"msg\":#\"#" ++ binary_to_list(Topic) ++ "\"}"),
     {noreply, State}.
 

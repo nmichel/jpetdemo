@@ -94,7 +94,6 @@ $(function() {
     function onMessage(evt) { 
         var data = evt.data;
         json = JSON.parse(data);
-        
         showScreen('<span style="color: blue;">[' + json.from + '@' + json.room + '] ' + json.msg + '</span>'); 
     };  
     
@@ -106,8 +105,7 @@ $(function() {
         $('#output').prepend('<p>' + txt + '</p>');
     };
     
-    function clearScreen() 
-    { 
+    function clearScreen() { 
         $('#output').html("");
     };
 
@@ -120,7 +118,7 @@ $(function() {
     $('#send_text').click(function() {
         sendTxt();
     });
-    $('#clear_screen').click(function() {
+    $('#clear').click(function() {
         clearScreen();
     });
     $('#subscribe_topic').click(function() {

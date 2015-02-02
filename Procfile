@@ -1,1 +1,1 @@
-web: erl -pa deps/*/ebin ../jpetdemo/ebin -s jpetdemo
+web: erl -pa deps/*/ebin ebin -s jpetdemo

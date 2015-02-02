@@ -1,3 +1,3 @@
 #!/bin/bash
 
-erl -pa ../jpetdemo/ebin deps/*/ebin -s jpetdemo
+erl -pa ebin deps/*/ebin -s jpetdemo

@@ -57,7 +57,7 @@ handle_call({route, Emitter, Node}, _From, State) ->
                               lists:map(fun({Tgt}) ->
                                                 Tgt ! {Emitter, Node, Captures}
                                         end, Tgts);
-                          {false, []} ->
+                          {false, _} ->
                               ok
                       end,
                       Acc

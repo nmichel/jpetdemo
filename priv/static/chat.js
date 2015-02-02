@@ -79,7 +79,7 @@ $(function() {
     };
     
     function onOpen(evt) { 
-        var matcher = jjpet.compile('**/{"answer":_}');
+        //var matcher = jjpet.compile('<!{"answer":_}!>');
         showScreen('<div class="alert alert-success">connected</div>');
         $("#navigation").slideDown();
         $('#subscriptions').slideDown();

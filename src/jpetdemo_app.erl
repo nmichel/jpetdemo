@@ -19,8 +19,17 @@ start(_StartType, _StartArgs) ->
                                              {"/static/[...]", cowboy_static, {dir, "./priv/static"}}
                                             ]}
                                      ]),
-    {ok, _} = cowboy:start_http(http, 100, [{port, 9000}],
+    {ok, _} = cowboy:start_http(http, 100, [{port, port()}],
                                 [{env, [{dispatch, Dispatch}]}]).
 
 stop(_State) ->
     ok.
+
+port() ->
+    case os:getenv("PORT") of
+        false ->
+            {ok, Port} = application:get_env(http_port),
+            Port;
+        Other ->
+            list_to_integer(Other)
+    end.

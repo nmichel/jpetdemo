@@ -1,1 +1,1 @@
-web: erl -pa deps/*/ebin ebin -s jpetdemo
+web: erl -pa ebin deps/*/ebin -noshell -noinput -s jpetdemo

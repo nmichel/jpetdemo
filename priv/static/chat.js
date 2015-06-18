@@ -1,4 +1,6 @@
 $(function() {
+    $('#server').val('ws://' + window.location.host + '/websocket')
+
     var jjpet = require('jjpet'),
         jChat = $('#chats'),
         patmap = {},
@@ -43,8 +45,8 @@ $(function() {
         })
 
         if (e.subs.length == 0) {
-          e.cb()
-          delete patmap[p]
+            e.cb()
+            delete patmap[p]
         }
     }
 

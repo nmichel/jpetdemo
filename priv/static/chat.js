@@ -6,23 +6,51 @@ $(function() {
         patmap = {},
         websocket
 
-    function unsubscribe_room(p) {
-        var msg = {
-            ctrl: {
-                unsubscribe: ["room", p]
-            }
+    // -----
+
+    function send(node) {
+        websocket.send(JSON.stringify(node))
+    }
+
+    function subscribe_room(room) {
+      send({
+        ctrl: {
+          subscribe: ["room", room]
         }
-        websocket.send(JSON.stringify(msg))
+      })
+    }
+
+    function subscribe_topic(topic) {
+      send({
+        ctrl: {
+          subscribe: ["topic", topic]
+        }
+      })
+    }
+
+    function unsubscribe_room(p) {
+      send({
+        ctrl: {
+          unsubscribe: ["room", p]
+        }
+      })
     }
 
     function unsubscribe_topic(p) {
-        var msg = {
-            ctrl: {
-                unsubscribe: ["topic", p]
-            }
+      send({
+        ctrl: {
+          unsubscribe: ["topic", p]
         }
-        websocket.send(JSON.stringify(msg))
-    };
+      })
+    }
+
+    function send_msg(from, to, txt) {
+      send({from: from,
+            room: to,
+            msg: txt})
+    }
+
+    // -----
 
     function register(p, w, cb) {
         var e = patmap[p]
@@ -50,6 +78,10 @@ $(function() {
         }
     }
 
+    function isRegistered(p) {
+        return !!patmap[p]
+    }
+
     function dispatch(n) {
         for (var k in patmap) {
             var e = patmap[k],
@@ -62,6 +94,8 @@ $(function() {
             }
         }
     }
+
+    // -----
 
     function buildTextLine(n) {
       return '<div class="line">'
@@ -112,6 +146,8 @@ $(function() {
         return w
     }
 
+    // -----
+
     function connect() {
         wsHost = $("#server").val()
         websocket = new WebSocket(wsHost);
@@ -134,66 +170,7 @@ $(function() {
         };
     };
 
-    function subscribe_room() {
-        var room = $("#subscribe_room_text").val(),
-            msg = {
-                ctrl: {
-                    subscribe: ["room", room]
-                }
-            },
-            p = '{"room":"' + room + '"}',
-            w = buildChatWindow(p)
-
-        w.link(jChat)
-        register(p, w, function() {
-          unsubscribe_room(room)
-        })
-        websocket.send(JSON.stringify(msg));
-    };
-
-    function subscribe_topic() {
-        var topic = $("#subscribe_topic_text").val(),
-            msg = {
-                ctrl: {
-                    subscribe: ["topic", topic]
-                }
-            },
-            p = '{"msg":#"#' + topic + '"}',
-            w = buildChatWindow(p)
-
-        w.link(jChat)
-        register(p, w, function() {
-          unsubscribe_topic(topic)
-        })
-        websocket.send(JSON.stringify(msg));
-    };
-
-    function unsubscribe_topic() {
-        var topic = $("#subscribe_topic_text").val();
-        var msg = {
-            ctrl: {
-                unsubscribe: ["topic", topic]
-            }
-        };
-        websocket.send(JSON.stringify(msg));
-    };
-
-    function sendTxt() {
-        if (websocket.readyState == websocket.OPEN){
-            var name = $("#name").val();
-            var room = $("#send_to_room").val();
-            var txt = $("#send_txt").val();
-            var msg = {from: name,
-                       room: room,
-                       msg: txt};
-            websocket.send(JSON.stringify(msg));
-        } else {
-            showScreen('websocket is not connected');
-        };
-    };
-
     function onOpen(evt) {
-        //var matcher = jjpet.compile('<!{"answer":_}!>');
         showScreen('<div class="alert alert-success">connected</div>');
         $("#navigation").slideDown();
         $('#subscriptions').slideDown();
@@ -208,14 +185,60 @@ $(function() {
     };
 
     function onMessage(evt) {
-        var data = evt.data,
-            json = JSON.parse(data)
-        dispatch(json)
+        dispatch(JSON.parse(evt.data))
     };
 
     function onError(evt) {
         showScreen('<span style="color: red;">ERROR: ' + evt.data + '</span>');
     };
+
+    // -----
+
+    function click_subscribe_room() {
+        var room = $("#subscribe_room_text").val(),
+            p = '{"room":"' + room + '"}'
+        if (isRegistered(p)) {
+          // TODO : some animation ? Some log ?
+          return // <==
+        }
+
+        var w = buildChatWindow(p)
+        w.link(jChat)
+        register(p, w, function() {
+          unsubscribe_room(room)
+        })
+
+        subscribe_room(room)
+    }
+
+    function click_subscribe_topic() {
+        var topic = $("#subscribe_topic_text").val(),
+            p = '{"msg":#"#' + topic + '"}'
+        if (isRegistered(p)) {
+          // TODO : some animation ? Some log ?
+          return // <==
+        }
+
+        var w = buildChatWindow(p)
+        w.link(jChat)
+        register(p, w, function() {
+          unsubscribe_topic(topic)
+        })
+
+        subscribe_topic(topic)
+    };
+
+    function click_sendMessage() {
+        if (websocket.readyState != websocket.OPEN){
+            showScreen('websocket is not connected')
+            return // <==
+        }
+
+        var name = $("#name").val(),
+            room = $("#send_to_room").val(),
+            txt = $("#send_txt").val()
+        send_msg(name, room, txt)
+    }
 
     function showScreen(txt) {
         $('#output').prepend('<p>' + txt + '</p>');
@@ -225,25 +248,17 @@ $(function() {
         $('#output').html("");
     };
 
+    // -----
+
+    $('#toggle_connection').click(toggle_connection)
+    $('#send_text').click(click_sendMessage)
+    $('#clear').click(clearScreen)
+    $('#subscribe_topic').click(click_subscribe_topic)
+    $('#subscribe_room').click(click_subscribe_room)
+
     $("#navigation").hide();
     $("#subscriptions").hide();
     $("#chats").hide();
-
-    $('#toggle_connection').click(function() {
-        toggle_connection();
-    });
-    $('#send_text').click(function() {
-        sendTxt();
-    });
-    $('#clear').click(function() {
-        clearScreen();
-    });
-    $('#subscribe_topic').click(function() {
-        subscribe_topic();
-    });
-    $('#subscribe_room').click(function() {
-        subscribe_room();
-    });
 
     $('#name').tooltip({'trigger':'focus', 'placement':'right', 'title': 'message sender\'s name'});
     $('#send_to_room').tooltip({'trigger':'focus', 'title': 'room name to which the message must be sent'});

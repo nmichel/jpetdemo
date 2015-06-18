@@ -112,7 +112,8 @@ $(function() {
                        + '  <div class="panel-heading clearfix">'
                        + '    <h2 class="panel-title pull-left">' + name + '</h2>'
                        + '    <div class="btn-group pull-right">'
-                       + '      <a class="btn btn-default btn-sm">close</a>'
+                       + '      <button bid="1" class="btn btn-danger">close</button>'
+                       + '      <button bid="2" class="btn btn-success">clear</button>'
                        + '    </div>'
                        + '  </div>'
                        + '</div>'),
@@ -124,9 +125,12 @@ $(function() {
         var w = {}
 
         function bind(w) {
-          jPanel.find('a').click(function() {
+          jPanel.find('button[bid="1"]').click(function() {
             unregister(name, w)
             w.unlink()
+          })
+          jPanel.find('button[bid="2"]').click(function() {
+            jBody.html('')
           })
         }
 

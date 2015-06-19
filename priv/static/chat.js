@@ -183,7 +183,7 @@ $(function() {
     function connect() {
         wsHost = $("#server").val()
         websocket = new WebSocket(wsHost);
-        showScreen('<b>Connecting to: ' +  wsHost + '</b>');
+        showScreen('<span class="info">connecting to: ' +  wsHost + '</span>');
         websocket.onopen = function(evt) { onOpen(evt) };
         websocket.onclose = function(evt) { onClose(evt) };
         websocket.onmessage = function(evt) { onMessage(evt) };
@@ -203,16 +203,18 @@ $(function() {
     };
 
     function onOpen(evt) {
-        showScreen('<div class="alert alert-success">connected</div>');
+        showScreen('<span class="success">connected</span>');
         $("#navigation").slideDown();
         $('#subscriptions').slideDown();
+        $('#raw').slideDown();
         $('#chats').slideDown();
     };
 
     function onClose(evt) {
-        showScreen('<div class="alert alert-danger">disconnected</div>');
+        showScreen('<span class="error">disconnected</span>');
         $("#navigation").slideUp();
         $('#subscriptions').slideUp();
+        $('#raw').slideUp();
         $('#chats').slideUp();
         clean()
     };
@@ -222,7 +224,7 @@ $(function() {
     };
 
     function onError(evt) {
-        showScreen('<span style="color: red;">ERROR: ' + evt.data + '</span>');
+        showScreen('<span class="error">ERROR: ' + evt.data + '</span>');
     };
 
     // -----
@@ -281,7 +283,7 @@ $(function() {
 
     function click_sendMessage() {
         if (websocket.readyState != websocket.OPEN){
-            showScreen('websocket is not connected')
+            showScreen('<span class="error">websocket is not connected</span>')
             return // <==
         }
 
@@ -291,8 +293,18 @@ $(function() {
         send_msg(name, room, txt)
     }
 
+    function click_send_any() {
+        var txt = $("#any_json").val()
+        try {
+            send(JSON.parse(txt))
+        }
+        catch (e) {
+            showScreen('<span class="error">ERROR: Invalid JSON ' + txt + '</span>');
+        }
+    }
+
     function showScreen(txt) {
-        $('#output').prepend('<p>' + txt + '</p>');
+        $('#output').prepend(txt + '<br />');
     };
 
     function clearScreen() {
@@ -307,9 +319,11 @@ $(function() {
     $('#subscribe_topic').click(click_subscribe_topic)
     $('#subscribe_room').click(click_subscribe_room)
     $('#subscribe_any').click(click_subscribe_any)
+    $('#send_json').click(click_send_any)
 
     $("#navigation").hide();
     $("#subscriptions").hide();
+    $("#raw").hide();
     $("#chats").hide();
 
     $('#name').tooltip({'trigger':'focus', 'placement':'right', 'title': 'message sender\'s name'});
@@ -318,9 +332,10 @@ $(function() {
     $('#subscribe_room_text').tooltip({'trigger':'focus', 'title': 'the name of the room you want to have messages'});
     $('#subscribe_topic_text').tooltip({'trigger':'focus', 'title': 'the name of the topic you want to have messages'});
     $('#subscribe_any_text').tooltip({'trigger':'focus', 'title': 'any valid jpet expression'});
+    $('#any_json').tooltip({'trigger':'focus', 'title': 'any valid json expression'});
 
     if(!("WebSocket" in window)){
-        showScreen('<p><span style="color: red;">websockets are not supported </span></p>');
+        showScreen('<span class="error">ERROR: websockets are not supported</span>')
         $("#navigation").hide();
     };
 });

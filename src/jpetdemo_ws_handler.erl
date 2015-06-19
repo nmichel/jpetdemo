@@ -21,7 +21,7 @@ websocket_handle({text, Msg}, Req, State = #state{router = Router}) ->
 websocket_handle(_Data, Req, State) ->
     {ok, Req, State}.
 
-websocket_info({From, Node, Captures}, Req, State) ->
+websocket_info({_From, Node, _Captures}, Req, State) ->
     {reply, {text, jsx:encode(Node)}, Req, State};
 websocket_info(_Info, Req, State) ->
     {ok, Req, State}.

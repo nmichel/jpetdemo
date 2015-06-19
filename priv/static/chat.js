@@ -20,14 +20,6 @@ $(function() {
       })
     }
 
-    function subscribe_topic(topic) {
-      send({
-        ctrl: {
-          subscribe: ["topic", topic]
-        }
-      })
-    }
-
     function unsubscribe_room(p) {
       send({
         ctrl: {
@@ -36,10 +28,34 @@ $(function() {
       })
     }
 
+    function subscribe_topic(topic) {
+      send({
+        ctrl: {
+          subscribe: ["topic", topic]
+        }
+      })
+    }
+
     function unsubscribe_topic(p) {
       send({
         ctrl: {
           unsubscribe: ["topic", p]
+        }
+      })
+    }
+
+    function subscribe_any(e) {
+      send({
+        ctrl: {
+          subscribe: ["any", e]
+        }
+      })
+    }
+
+    function unsubscribe_any(e) {
+      send({
+        ctrl: {
+          unsubscribe: ["any", e]
         }
       })
     }
@@ -105,7 +121,9 @@ $(function() {
         + '</div>'
     }
 
-    function buildChatWindow(name) {
+    function buildChatWindow(name, lfn) {
+        lfn = lfn || buildTextLine
+
         var name = name,
             jWindow = $('<div class="col-lg-6"></div>'),
             jPanel = $('  <div class="panel panel-primary">'
@@ -144,7 +162,7 @@ $(function() {
         }
 
         w.add = function(n) {
-          jBody.append(buildTextLine(n))
+          jBody.append(lfn(n))
         }
 
         return w
@@ -232,6 +250,24 @@ $(function() {
         subscribe_topic(topic)
     };
 
+    function click_subscribe_any() {
+        var p = $("#subscribe_any_text").val()
+        if (isRegistered(p)) {
+          // TODO : some animation ? Some log ?
+          return // <==
+        }
+
+        var w = buildChatWindow(p, function(n) {
+            return '<div>' + JSON.stringify(n) + '</div>'
+        })
+        w.link(jChat)
+        register(p, w, function() {
+          unsubscribe_any(p)
+        })
+
+        subscribe_any(p)
+    };
+
     function click_sendMessage() {
         if (websocket.readyState != websocket.OPEN){
             showScreen('websocket is not connected')
@@ -259,6 +295,7 @@ $(function() {
     $('#clear').click(clearScreen)
     $('#subscribe_topic').click(click_subscribe_topic)
     $('#subscribe_room').click(click_subscribe_room)
+    $('#subscribe_any').click(click_subscribe_any)
 
     $("#navigation").hide();
     $("#subscriptions").hide();
@@ -269,6 +306,7 @@ $(function() {
     $('#send_txt').tooltip({'trigger':'focus', 'title': 'text to send. Use # prefix to indicate a topic. e.g. #json'});
     $('#subscribe_room_text').tooltip({'trigger':'focus', 'title': 'the name of the room you want to have messages'});
     $('#subscribe_topic_text').tooltip({'trigger':'focus', 'title': 'the name of the topic you want to have messages'});
+    $('#subscribe_any_text').tooltip({'trigger':'focus', 'title': 'any valid jpet expression'});
 
     if(!("WebSocket" in window)){
         showScreen('<p><span style="color: red;">websockets are not supported </span></p>');

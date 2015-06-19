@@ -68,6 +68,16 @@ $(function() {
 
     // -----
 
+    function clean() {
+        for (var k in patmap) {
+            var e = patmap[k]
+            e.subs.forEach(function(w) {
+                w.unlink()
+            })
+            delete patmap[k]
+        }
+    }
+
     function register(p, w, cb) {
         var e = patmap[p]
         if (!e) {
@@ -204,6 +214,7 @@ $(function() {
         $("#navigation").slideUp();
         $('#subscriptions').slideUp();
         $('#chats').slideUp();
+        clean()
     };
 
     function onMessage(evt) {

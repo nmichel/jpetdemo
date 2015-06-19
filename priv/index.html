@@ -18,7 +18,8 @@
         <div class="jumbotron">
           <h1>jpetchat</h1>
         </div>
-        <div id="connection" class="panel panel-primary">
+
+        <div id="connection" class="row panel panel-primary">
           <div class="panel-heading">
             <h2 class="panel-title">Connection</h2>
           </div>
@@ -34,10 +35,7 @@
           </form>
         </div>
 
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h2 class="panel-title">Output</h2>
-          </div>
+        <div class="row panel panel-primary">
           <form class="panel-body form-horizontal">
             <div id="content" class="form-group">
               <div id="output" class="col-xs-9"></div>
@@ -49,7 +47,7 @@
         </div>
 
         <div class="row">
-          <div class="col-lg-4">
+          <div class="row col-lg-4">
             <div id="navigation" class="panel panel-primary">
               <div class="panel-heading">
                 <h2 class="panel-title">Messenging</h2>
@@ -129,6 +127,53 @@
           </div>
 
           <div id="chats" class="col-lg-8">
+          </div>
+        </div>
+
+        <div class="row panel panel-primary">
+          <div class="col-lg-12"><h2>Some notes ...<h6>... to keep in mind when interpreting application behaviour</h6></h2></div>
+          <div class="col-lg-12">
+              <h4>Yes, nodes may be duplicated !</h4>
+              <p>And this will certainly happen </p>
+              <p>The server sends a copy of a node for each expression it matches, provided the client has subscribed to it</p>
+
+              <h4>Every operations in jpetchat (subscribe, unsubscribe, message, ...) can be reduced to sending a JSON node</h4>
+              <p>Everything can be done with raw JSON nodes</p>
+              <p>Subscribe to "{}" to see what going on</p>
+
+              <h4>The Chat application may be built from outside de server !<h6>... using raw subscriptions and nodes sending</h6></h4>              
+              <p>It may be reduced to an agreement between interacting browser-hosted applications; a set of rules defining JSON nodes structure, subscriptions (longterm, or temporary)</p>
+
+              <h4>On can quite simply build a message based, distributed system</h4>
+              <p>Simply define message structure, exchange protocol, and subscriptions scheduling</p>
+              <p>Each collaborating module intercepts a subpart of the message flow, dependending on it role, and sends anwers and indications</p>
+          </div>
+        </div>
+
+        <div class="row panel panel-primary">
+          <div class="col-lg-12"><h2>Some expressions ...<h5>... to use as RAW subscriptions </h5></h2></div>
+
+          <div class="row col-lg-12">
+            <div class="col-lg-4">
+              <h4>{}</h4>
+              <p>Capture node which is an object</p>
+              <h4>[]</h4>
+              <p>Capture node which is the empty list</p>
+              <h4>[*]</h4>
+              <p>Capture node which is a list (possibly empty)</p>
+            </div>
+            <div class="col-lg-4">
+              <h4>{"ctrl":_}</h4>
+              <p>Capture node which is an object with a key "ctrl"</p>
+              <h4>[1, "foo", *, false]</h4>
+              <p>Capture node which is a list starting with number <code>1</code>, followed by string <code>"foo"</code>, and ending with boolean <code>false</code></p>
+            </div>
+            <div class="col-lg-4">
+              <h4>{"from": _,"room":"erlang"}</h4>
+              <p>Capture node which has a key "from", and a key/value pair "room"/"erlang"</p>
+              <h4>{"from": "bob"}</h4>
+              <p>Capture nodes from "bob"</p>
+            </div>
           </div>
         </div>
       </div>

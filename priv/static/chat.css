@@ -1,3 +1,7 @@
+:focus {
+    outline: 0;
+}
+
 #output {
     height: 100px;
     max-height: 100px;
@@ -31,4 +35,53 @@ textarea {
 
 .default {
     color: black;
+}
+
+.try {
+    display: inline-block;
+    overflow: hidden;
+    width: 100%;
+}
+
+.try > * {
+    display: inline-block;
+}
+
+.ejpet {
+    background: #99CCFF;
+    transition: width 0.5s, background-color 0.5s, transform 2s;
+    width: 100%;
+}
+
+.do {
+    transition: width 0.5s, background-color 0.5s, transform 2s;
+    text-align: center;
+    width: 0px;
+}
+
+.try:hover > .ejpet {
+    background: #008AE6;
+    width: 70%;
+}
+
+.try:hover > .do {
+    background: #99CCFF;
+    width: 30%;
+}
+
+.window {
+    transition: background-color 2s;
+}
+
+.window .panel {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+div.new {
+    background-color: red;
+}
+
+.panel, .panel * {
+    border-radius: 0;
 }

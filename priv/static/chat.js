@@ -6,6 +6,30 @@ $(function() {
         patmap = {},
         websocket
 
+    function hash(s) {
+        for(var ret = 0, i = 0, len = s.length; i < len; i++) {
+            ret = (31 * ret + s.charCodeAt(i)) << 0;
+        }
+        return ret
+    }
+
+    // -----
+
+    $('h4.ejpet').each(function(i) {
+        var jThis = $(this),
+            t = jThis.text()
+        
+        $('<div class="try"><h4 class="ejpet">'+t+'</h4><h4 class="do">subscribe</h4></div>')
+            .click(function() {
+                do_subscribe_any(t)
+                var e = $('div[title="' + hash(t) + '"]')
+                e.focus()
+                e.addClass('new')
+                window.setTimeout(function() {e.removeClass('new')}, 500)
+            })
+            .replaceAll(jThis)
+    })
+
     // -----
 
     function send(node) {
@@ -135,7 +159,7 @@ $(function() {
         lfn = lfn || buildTextLine
 
         var name = name,
-            jWindow = $('<div class="col-lg-6"></div>'),
+            jWindow = $('<div tabindex="1" title="' + hash(name) + '" class="window col-lg-6"></div>'),
             jPanel = $('  <div class="panel panel-primary">'
                        + '  <div class="panel-heading clearfix">'
                        + '    <h2 class="panel-title pull-left">' + name + '</h2>'
@@ -263,11 +287,16 @@ $(function() {
         subscribe_topic(topic)
     };
 
-    function click_subscribe_any() {
-        var p = $("#subscribe_any_text").val()
+    function do_subscribe_any(p) {
+        p = p.trim()
+
+        if (!p.length) {
+            return // <== 
+        }
+
         if (isRegistered(p)) {
-          // TODO : some animation ? Some log ?
-          return // <==
+            // TODO : some animation ? Some log ?
+            return // <==
         }
 
         var w = buildChatWindow(p, function(n) {
@@ -275,10 +304,14 @@ $(function() {
         })
         w.link(jChat)
         register(p, w, function() {
-          unsubscribe_any(p)
+            unsubscribe_any(p)
         })
-
+        
         subscribe_any(p)
+    }
+
+    function click_subscribe_any() {
+        do_subscribe_any($("#subscribe_any_text").val())
     };
 
     function click_sendMessage() {

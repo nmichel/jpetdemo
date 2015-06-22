@@ -136,7 +136,7 @@
               <h4>Yes, nodes may be duplicated !</h4>
               <p>And this will certainly happen </p>
               <p>The server sends a copy of a node for each expression it matches, provided the client has subscribed to it</p>
-
+              
               <h4>Every operations in jpetchat (subscribe, unsubscribe, message, ...) can be reduced to sending a JSON node</h4>
               <p>Everything can be done with raw JSON nodes</p>
               <p>Subscribe to "{}" to see what going on</p>
@@ -151,27 +151,56 @@
         </div>
 
         <div class="row panel panel-primary">
+          <div class="col-lg-12"><h2>Some chat related expressions ...<h5>... what's happening under the hood</h5></h2></div>
+          
+          <div class="row col-lg-12">
+            <div class="col-lg-4">
+              <h4  class="ejpet">{"ctrl":{"subscribe": _}}</h4>
+              <p>Match all subscription</p>
+              <h4  class="ejpet">{"ctrl":{"unsubscribe": _}}</h4>
+              <p>Match all unsubcriptions</p>
+              <h4  class="ejpet">{"from":_, "msg":_,"room":_}</h4>
+              <p>Match all chat messages</p>
+            </div>
+            <div class="col-lg-4">
+              <h4  class="ejpet">{"ctrl":{"subscribe": ["room",_]}}</h4>
+              <p>Match subscription to rooms</p>
+              <h4  class="ejpet">{"ctrl":{"unsubscribe": ["topic", _]}}</h4>
+              <p>Match unsubcriptions from topics</p>
+              <h4  class="ejpet">{"from": "bob", "msg":_,"room":#"^lang_"}</h4>
+              <p>Match chat messages from "bob", sent to any room which name matches regular expression "^lang_" </p>
+            </div>
+            <div class="col-lg-4">
+              <h4 class="ejpet">{"ctrl":{}}</h4>
+              <p>Match control nodes</p>
+              <h4  class="ejpet">{"msg":#"erlang"}</h4>
+              <p>Match message node with a key "msg" which associated value contains somewhere "erlang"</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row panel panel-primary">
           <div class="col-lg-12"><h2>Some expressions ...<h5>... to use as RAW subscriptions </h5></h2></div>
 
           <div class="row col-lg-12">
             <div class="col-lg-4">
-              <h4>{}</h4>
+              <h4  class="ejpet">{}</h4>
               <p>Capture node which is an object</p>
-              <h4>[]</h4>
+              <h4  class="ejpet">[]</h4>
               <p>Capture node which is the empty list</p>
-              <h4>[*]</h4>
+              <h4  class="ejpet">[*]</h4>
               <p>Capture node which is a list (possibly empty)</p>
             </div>
             <div class="col-lg-4">
-              <h4>{"ctrl":_}</h4>
+              <h4  class="ejpet">{"ctrl":_}</h4>
               <p>Capture node which is an object with a key "ctrl"</p>
-              <h4>[1, "foo", *, false]</h4>
+              <h4  class="ejpet">[1, "foo", *, false]</h4>
               <p>Capture node which is a list starting with number <code>1</code>, followed by string <code>"foo"</code>, and ending with boolean <code>false</code></p>
             </div>
             <div class="col-lg-4">
-              <h4>{"from": _,"room":"erlang"}</h4>
+              <h4  class="ejpet">{"from": _,"room":"erlang"}</h4>
               <p>Capture node which has a key "from", and a key/value pair "room"/"erlang"</p>
-              <h4>{"from": "bob"}</h4>
+              <h4  class="ejpet">{"from": "bob"}</h4>
               <p>Capture nodes from "bob"</p>
             </div>
           </div>

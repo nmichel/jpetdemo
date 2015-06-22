@@ -78,6 +78,10 @@ textarea {
     margin-top: 10px;
 }
 
+div.received {
+    background-color: green;
+}
+
 div.new {
     background-color: red;
 }

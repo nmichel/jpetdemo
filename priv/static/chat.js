@@ -32,7 +32,13 @@ $(function() {
 
     // -----
 
+    function output(node) {
+        var t = JSON.stringify(node)
+        showScreen('<span class="info"> send: ' + t + '</span>');
+    }
+
     function send(node) {
+        output(node)
         websocket.send(JSON.stringify(node))
     }
 
@@ -140,6 +146,8 @@ $(function() {
             if (mr.status) {
                 e.subs.forEach(function(w) {
                     w.add(n)
+                    w.window.addClass('received')
+                    window.setTimeout(function() {w.window.removeClass('received')}, 500)
                 })
             }
         }
@@ -174,7 +182,9 @@ $(function() {
         jPanel.append(jBody)
         jWindow.append(jPanel)
 
-        var w = {}
+        var w = {
+            window: jWindow
+        }
 
         function bind(w) {
           jPanel.find('button[bid="1"]').click(function() {
@@ -207,7 +217,7 @@ $(function() {
     function connect() {
         wsHost = $("#server").val()
         websocket = new WebSocket(wsHost);
-        showScreen('<span class="info">connecting to: ' +  wsHost + '</span>');
+        showScreen('<span class="info">connecting to ' +  wsHost + '</span>');
         websocket.onopen = function(evt) { onOpen(evt) };
         websocket.onclose = function(evt) { onClose(evt) };
         websocket.onmessage = function(evt) { onMessage(evt) };

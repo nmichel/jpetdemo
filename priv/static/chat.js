@@ -6,6 +6,47 @@ $(function() {
         patmap = {},
         websocket
 
+    var hb = (function() {
+
+        var delayInSec = 30,
+            delay = delayInSec * 1000,
+            count = 0,
+            max = (60/delayInSec * 10),
+            tid = null
+
+        function tick() {
+            if (count++ === max) {
+                console.log('count !', count)
+                return
+            }
+            
+            rawSend(["hb"])
+            schedule()
+        }
+
+        function schedule() {
+            tid = setTimeout(tick, delay)
+        }
+
+        return {
+            ping: function() {
+                if (tid) {
+                    clearTimeout(tid)
+                }
+
+                schedule()
+                count = 0
+            },
+
+            stop: function() {
+                if (tid) {
+                    clearTimeout(tid)
+                }
+                tid = null
+            }
+        }
+    })()
+
     function hash(s) {
         for(var ret = 0, i = 0, len = s.length; i < len; i++) {
             ret = (31 * ret + s.charCodeAt(i)) << 0;
@@ -32,14 +73,19 @@ $(function() {
 
     // -----
 
-    function output(node) {
+    function log(node) {
         var t = JSON.stringify(node)
         showScreen('<span class="info"> send: ' + t + '</span>');
     }
 
-    function send(node) {
-        output(node)
+    function rawSend(node) {
+        log(node)
         websocket.send(JSON.stringify(node))
+    }
+
+    function send(node) {
+        hb.ping()
+        rawSend(node)
     }
 
     function subscribe_room(room) {
@@ -222,10 +268,11 @@ $(function() {
         websocket.onclose = function(evt) { onClose(evt) };
         websocket.onmessage = function(evt) { onMessage(evt) };
         websocket.onerror = function(evt) { onError(evt) };
+        hb.ping()
     };
 
     function disconnect() {
-        websocket.close();
+        websocket.close()
     };
 
     function toggle_connection() {
@@ -250,6 +297,7 @@ $(function() {
         $('#subscriptions').slideUp();
         $('#raw').slideUp();
         $('#chats').slideUp();
+        hb.stop()
         clean()
     };
 
@@ -347,7 +395,10 @@ $(function() {
     }
 
     function showScreen(txt) {
-        $('#output').prepend(txt + '<br />');
+        var d = new Date()
+        $('#output').prepend('<span>' + d.getHours()
+                             + ':' + d.getMinutes() 
+                             + ':' + d.getSeconds() + '</span> | ' + txt + '<br />');
     };
 
     function clearScreen() {

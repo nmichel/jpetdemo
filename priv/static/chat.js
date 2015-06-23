@@ -285,6 +285,7 @@ $(function() {
 
     function onOpen(evt) {
         showScreen('<span class="success">connected</span>');
+        $("#content").slideDown();
         $("#navigation").slideDown();
         $('#subscriptions').slideDown();
         $('#raw').slideDown();
@@ -293,6 +294,7 @@ $(function() {
 
     function onClose(evt) {
         showScreen('<span class="error">disconnected</span>');
+        $("#content").slideUp();
         $("#navigation").slideUp();
         $('#subscriptions').slideUp();
         $('#raw').slideUp();
@@ -415,6 +417,7 @@ $(function() {
     $('#subscribe_any').click(click_subscribe_any)
     $('#send_json').click(click_send_any)
 
+    $("#content").hide();
     $("#navigation").hide();
     $("#subscriptions").hide();
     $("#raw").hide();

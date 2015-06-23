@@ -17,6 +17,14 @@
       <div class="row-fluid">
         <div class="jumbotron">
           <h1>jpetchat</h1>
+          <h3>A end to end live demo of JSON nodes matching.</h3>
+          <br/>
+          powered by <a href="https://github.com/nmichel/ejpet">ejpet</a> (server/erlang side) and <a href="https://github.com/nmichel/jjpet">jjpet</a> (browser/javascript side)
+          <br/><br/>
+          feedback welcome
+            <a href="mailto:tech.nicolas.michel@gmail.com" >mail</a> /
+            <a href="https://twitter.com/_nmichel">Twitter</a> /
+            <a href="https://plus.google.com/100100687277853988749">G+</a>
         </div>
 
         <div id="connection" class="row panel panel-primary">
@@ -35,9 +43,9 @@
           </form>
         </div>
 
-        <div class="row panel panel-primary">
+        <div id="content" class="row panel panel-primary">
           <form class="panel-body form-horizontal">
-            <div id="content" class="form-group">
+            <div class="form-group">
               <div id="output" class="col-xs-9"></div>
                 <div class="col-xs-2">
                   <button type="button" id="clear" class="btn btn-danger">clear</button>
@@ -133,20 +141,23 @@
         <div class="row panel panel-primary">
           <div class="col-lg-12"><h2>Some notes ...<h6>... to keep in mind when interpreting application behaviour</h6></h2></div>
           <div class="col-lg-12">
-              <h4>Yes, nodes may be duplicated !</h4>
-              <p>And this will certainly happen </p>
-              <p>The server sends a copy of a node for each expression it matches, provided the client has subscribed to it</p>
-              
-              <h4>Every operations in jpetchat (subscribe, unsubscribe, message, ...) can be reduced to sending a JSON node</h4>
-              <p>Everything can be done with raw JSON nodes</p>
-              <p>Subscribe to "{}" to see what going on</p>
+            <h4>Yes, you may not see what you send</h4>
+            <p>If none of your subscriptions matches</p>
 
-              <h4>The Chat application may be built from outside de server !<h6>... using raw subscriptions and nodes sending</h6></h4>              
-              <p>It may be reduced to an agreement between interacting browser-hosted applications; a set of rules defining JSON nodes structure, subscriptions (longterm, or temporary)</p>
+            <h4>Yes, nodes may be duplicated !</h4>
+            <p>And this will certainly happen </p>
+            <p>The server sends a copy of a node for each expression it matches, provided the client has subscribed to it</p>
+            
+            <h4>Every operations in jpetchat (subscribe, unsubscribe, message, ...) can be reduced to sending a JSON node</h4>
+            <p>Everything can be done with raw JSON nodes</p>
+            <p>Subscribe to "{}" to see what going on</p>
+            
+            <h4>The Chat application may be built from outside de server !<h6>... using raw subscriptions and nodes sending</h6></h4>              
+            <p>It may be reduced to an agreement between interacting browser-hosted applications; a set of rules defining JSON nodes structure, subscriptions (longterm, or temporary)</p>
 
-              <h4>On can quite simply build a message based, distributed system</h4>
-              <p>Simply define message structure, exchange protocol, and subscriptions scheduling</p>
-              <p>Each collaborating module intercepts a subpart of the message flow, dependending on it role, and sends anwers and indications</p>
+            <h4>On can quite simply build a message based, distributed system</h4>
+            <p>Simply define messages structure, exchange protocol, and subscriptions scheduling</p>
+            <p>Each collaborating module intercepts a subpart of the message flow, dependending on its role, and sends anwers and indications</p>
           </div>
         </div>
 

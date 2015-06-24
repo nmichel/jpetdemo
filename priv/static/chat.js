@@ -54,6 +54,21 @@ $(function() {
         return ret
     }
 
+    var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+    
+    function escapeHtml(string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+            return entityMap[s]
+        })
+    }
+
     // -----
 
     $('h4.ejpet').each(function(i) {
@@ -75,7 +90,7 @@ $(function() {
 
     function log(node) {
         var t = JSON.stringify(node)
-        showScreen('<span class="info"> send: ' + t + '</span>');
+        showScreen('<span class="info"> send: ' + escapeHtml(t) + '</span>');
     }
 
     function rawSend(node) {
@@ -201,19 +216,22 @@ $(function() {
 
     // -----
 
-    function buildTextLine(n) {
-      return '<div class="line">'
-        + '<span class="from">' + n.from + '</span>'
-        + '<span class="room">@' + n.room + '</span>'
-        + '<span class="text"> | ' + n.msg + '</span>'
-        + '</div>'
+    function prepare(s, p) {
+        if (p !== false) {
+            return escapeHtml(s) // 
+        }
+        return s
+    }
+
+    function buildTextLine(p, n) {
+        return '<span class="from">' + prepare(n.from, p) + '</span>'
+            + '<span class="room">@' + prepare(n.room, p) + '</span>'
+            + '<span class="text"> | ' + prepare(n.msg, p) + '</span>'
     }
 
     function buildChatWindow(name, lfn) {
-        lfn = lfn || buildTextLine
-
         var name = name,
-            jWindow = $('<div tabindex="1" title="' + hash(name) + '" class="window col-lg-6"></div>'),
+            jWindow = $('<div tabindex="1" title="' + hash(name) + '" class="window col-lg-12"></div>'),
             jPanel = $('  <div class="panel panel-primary">'
                        + '  <div class="panel-heading clearfix">'
                        + '    <h2 class="panel-title pull-left">' + name + '</h2>'
@@ -229,7 +247,12 @@ $(function() {
         jWindow.append(jPanel)
 
         var w = {
-            window: jWindow
+            window: jWindow,
+            secured: true
+        }
+
+        lfn = lfn || function(n) {
+            return buildTextLine(w.secured, n)
         }
 
         function bind(w) {
@@ -252,7 +275,10 @@ $(function() {
         }
 
         w.add = function(n) {
-          jBody.append(lfn(n))
+            jBody.prepend('<div class="line">'
+                          + '<span>' + dateString() + ' | </span>'
+                          + lfn(n)
+                          + '</div>')
         }
 
         return w
@@ -360,7 +386,7 @@ $(function() {
         }
 
         var w = buildChatWindow(p, function(n) {
-            return '<div>' + JSON.stringify(n) + '</div>'
+            return '<span>' + escapeHtml(JSON.stringify(n)) + '</span>'
         })
         w.link(jChat)
         register(p, w, function() {
@@ -396,11 +422,17 @@ $(function() {
         }
     }
 
+    function dateString() {
+        var d = new Date()
+
+        return '' + d.getHours()
+            + ':' + d.getMinutes() 
+            + ':' + d.getSeconds()        
+    }
+
     function showScreen(txt) {
         var d = new Date()
-        $('#output').prepend('<span>' + d.getHours()
-                             + ':' + d.getMinutes() 
-                             + ':' + d.getSeconds() + '</span> | ' + txt + '<br />');
+        $('#output').prepend('<span>' + dateString() + '</span> | ' + txt + '<br />');
     };
 
     function clearScreen() {

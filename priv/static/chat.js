@@ -229,18 +229,24 @@ $(function() {
             + '<span class="text"> | ' + prepare(n.msg, p) + '</span>'
     }
 
-    function buildChatWindow(name, lfn) {
+    function buildChatWindow(name, html, lfn) {
         var name = name,
             jWindow = $('<div tabindex="1" title="' + hash(name) + '" class="window col-lg-12"></div>'),
-            jPanel = $('  <div class="panel panel-primary">'
+            code = '  <div class="panel panel-primary">'
                        + '  <div class="panel-heading clearfix">'
                        + '    <h2 class="panel-title pull-left">' + name + '</h2>'
                        + '    <div class="btn-group pull-right">'
-                       + '      <button bid="1" class="btn btn-danger">close</button>'
-                       + '      <button bid="2" class="btn btn-success">clear</button>'
-                       + '    </div>'
-                       + '  </div>'
-                       + '</div>'),
+        
+        if (html) {
+            code += '<button bid="3" class="btn btn-danger glyphicon glyphicon-flash" data-toggle="tooltip" data-placement="right" title="Enable HTML"></button>'
+        }
+        code += '    <button bid="2" class="btn btn-success glyphicon glyphicon-refresh" data-toggle="tooltip" data-placement="right" title="Clear"></button>'
+            + '      <button bid="1" class="btn btn-warning glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="right" title="Remove subscription"></button>'
+            + '    </div>'
+            + '  </div>'
+            + '</div>'
+
+        var jPanel = $(code),
             jBody = $('<div class="block panel-body"></div>')
 
         jPanel.append(jBody)
@@ -250,6 +256,24 @@ $(function() {
             window: jWindow,
             secured: true
         }
+
+        function buildHandler(w) {
+            return function() {
+                var jThis = $(this)
+                if (w.secured) {
+                    jThis.removeClass('glyphicon-flash btn-danger')
+                    jThis.addClass('glyphicon-cloud btn-success')
+                    w.secured = false
+                }
+                else {
+                    jThis.removeClass('glyphicon-cloud btn-success')
+                    jThis.addClass('glyphicon-flash btn-danger')
+                    w.secured = true
+                }
+            }
+        }
+
+        jPanel.find('[bid="3"]').click(buildHandler(w))
 
         lfn = lfn || function(n) {
             return buildTextLine(w.secured, n)
@@ -347,7 +371,7 @@ $(function() {
           return // <==
         }
 
-        var w = buildChatWindow(p)
+        var w = buildChatWindow(p, true)
         w.link(jChat)
         register(p, w, function() {
           unsubscribe_room(room)
@@ -364,7 +388,7 @@ $(function() {
           return // <==
         }
 
-        var w = buildChatWindow(p)
+        var w = buildChatWindow(p, true)
         w.link(jChat)
         register(p, w, function() {
           unsubscribe_topic(topic)
@@ -385,7 +409,7 @@ $(function() {
             return // <==
         }
 
-        var w = buildChatWindow(p, function(n) {
+        var w = buildChatWindow(p, false, function(n) {
             return '<span>' + escapeHtml(JSON.stringify(n)) + '</span>'
         })
         w.link(jChat)
